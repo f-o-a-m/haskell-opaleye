@@ -78,6 +78,22 @@ keepWhen p = proc a -> do
   restrict  -< p a
   A.returnA -< a
 
+inBoundingBox
+  :: ((Double, Double), (Double, Double))
+  -> F.Field T.SqlText
+  -> F.Field T.SqlBool
+inBoundingBox ((xmin, ymin), (xmax, ymax)) (Column geohash) =
+  let
+    seNWBox =
+        HPQ.FunExpr "ST_MakeEnvelope" [ HPQ.ConstExpr $ HPQ.DoubleLit xmin
+                                      , HPQ.ConstExpr $ HPQ.DoubleLit ymin
+                                      , HPQ.ConstExpr $ HPQ.DoubleLit xmax
+                                      , HPQ.ConstExpr $ HPQ.DoubleLit ymax
+                                      , HPQ.ConstExpr $ HPQ.IntegerLit 4326
+                                      ]
+    geometry = HPQ.FunExpr "ST_geomFromGeohash" [geohash]
+  in Column $ HPQ.BinExpr (HPQ.:&&) seNWBox geometry
+
 -- * Equality operators
 
 infix 4 .==

@@ -156,6 +156,7 @@ showBinOp  OpBitAnd     = "&"
 showBinOp  OpBitOr      = "|"
 showBinOp  OpBitXor     = "^"
 showBinOp  OpAsg        = "="
+showBinOp  OpIntersect  = "&&"
 
 
 data UnOpType = UnOpFun | UnOpPrefix | UnOpPostfix
